@@ -1,6 +1,5 @@
 package com.example.parkingsystem.service;
 
-import com.example.parkingsystem.entity.User;
 import com.example.parkingsystem.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -30,7 +30,11 @@ public class ParkingSlotService {
         ParkingSlot slot = repository.findById(id).orElseThrow();
         slot.setBlock(updatedSlot.getBlock());
         slot.setFloor(updatedSlot.getFloor());
-        slot.setOccupied(updatedSlot.isOccupied());
+        slot.setIsOccupied(updatedSlot.getIsOccupied()); // ⚠️ Fix method name
+        slot.setSlotNumber(updatedSlot.getSlotNumber());
+        slot.setSlotType(updatedSlot.getSlotType());
+        slot.setXCoordinate(updatedSlot.getXCoordinate());
+        slot.setYCoordinate(updatedSlot.getYCoordinate());
         return repository.save(slot);
     }
 
@@ -48,5 +52,13 @@ public class ParkingSlotService {
 
     public List<ParkingSlot> getByOccupied(boolean status) {
         return repository.findByIsOccupied(status);
+    }
+
+    public List<ParkingSlot> getAvailableSlots() {
+        return repository.findByIsOccupied(false);
+    }
+
+    public List<ParkingSlot> getByBlockId(Long blockId) {
+        return repository.findByBlockId(blockId);
     }
 }

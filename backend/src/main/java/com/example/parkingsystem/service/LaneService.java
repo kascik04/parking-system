@@ -22,24 +22,45 @@ public class LaneService {
     }
 
     public Lane create(Lane lane) {
-        if (repository.existsByType(lane.getType())) throw new RuntimeException("Lane type already exists");
+        // ⚠️ Fix: Sử dụng enum thay vì toString()
+        if (repository.existsByType(lane.getType())) {
+            throw new RuntimeException("Lane type already exists");
+        }
         return repository.save(lane);
     }
 
     public Lane update(Long id, Lane updated) {
         Lane lane = repository.findById(id).orElseThrow();
-        if (!lane.getType().equals("IN") && !lane.getType().equals("OUT")) {
+        // ⚠️ Fix: So sánh enum thay vì String
+        if (lane.getType() != Lane.LaneType.IN && lane.getType() != Lane.LaneType.OUT) {
             lane.setType(updated.getType());
         }
+        lane.setName(updated.getName()); // ⚠️ Thêm update name
         lane.setDescription(updated.getDescription());
+        lane.setBlock(updated.getBlock()); // ⚠️ Thêm update block
+        lane.setIsActive(updated.getIsActive()); // ⚠️ Thêm update active status
         return repository.save(lane);
     }
 
     public void delete(Long id) {
         Lane lane = repository.findById(id).orElseThrow();
-        if (lane.getType().equals("IN") || lane.getType().equals("OUT")) {
+        // ⚠️ Fix: So sánh enum thay vì String
+        if (lane.getType() == Lane.LaneType.IN || lane.getType() == Lane.LaneType.OUT) {
             throw new RuntimeException("Cannot delete default lanes IN or OUT");
         }
         repository.deleteById(id);
+    }
+
+    // ⚠️ Thêm các method hữu ích
+    public List<Lane> getByType(Lane.LaneType type) {
+        return repository.findByType(type);
+    }
+
+    public List<Lane> getActiveOnes() {
+        return repository.findByIsActive(true);
+    }
+
+    public List<Lane> getByBlockId(Long blockId) {
+        return repository.findByBlockId(blockId);
     }
 }
